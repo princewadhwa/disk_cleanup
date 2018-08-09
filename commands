@@ -1,6 +1,8 @@
 du -ahx / | sort -rh | head -5
 du --max-depth=1 -h /
 
+du -sh ./*/
+
 du --max-depth=1 / -h | sort -r -k1,1n
 
 ls -lSh | head -5
@@ -22,3 +24,15 @@ wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-
 yum install jdk-10.0.1_linux-x64_bin.rpm -y
 java -version
 update-alternatives --config java
+
+###### Update psql verseion 10.04 ###########
+yum list installed | grep postgres
+postgres -V
+psql -V
+sudo yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
+sudo yum install postgresql10
+which psql
+sudo netstat -antup | grep 5432
+cd /usr/bin/
+mv psql psql_bkp
+ln -s /usr/pgsql-10/bin/psql /usr/bin/psql
