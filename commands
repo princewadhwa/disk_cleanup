@@ -26,6 +26,7 @@ java -version
 update-alternatives --config java
 
 ###### Update psql verseion 10.04 ###########
+yum list postgresql\*
 yum list installed | grep postgres
 postgres -V
 psql -V
@@ -36,3 +37,13 @@ sudo netstat -antup | grep 5432
 cd /usr/bin/
 mv psql psql_bkp
 ln -s /usr/pgsql-10/bin/psql /usr/bin/psql
+
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO adzadmin;
+
+#######Copy and restore tables from db ###############
+ psql -h prod-thehub-replica.cwdwar1yxjaq.ap-southeast-1.rds.amazonaws.com -U adz -d adz -c "\copy (select * from messages) To STDOUT " >> messages.sql
+ psql -h adzhub.cwdwar1yxjaq.ap-southeast-1.rds.amazonaws.com -U adz_demo -d adz_qa -c "\COPY messages FROM 'messages.sql'"
+ 
+ psql -h prod-thehub-replica.cwdwar1yxjaq.ap-southeast-1.rds.amazonaws.com -U adz -d adz -c "\copy (select CURRENT_TIMESTAMP, view.* from campaign_items_flat_view view) To STDOUT " >> tmp.sql
+ psql -h adzhub.cwdwar1yxjaq.ap-southeast-1.rds.amazonaws.com -U adz_demo -d adz_qa -c "\COPY campaign_items_flat_view_log FROM 'tmp.txt'"
+ 
